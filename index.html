@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>TINO - Smart Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#f5f7fc;--card:#fff;--text:#17213a;
+--muted:#8791a7;--primary:#536dfe;
+--soft:#edf0ff;--border:#e9edf5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body.dark{--bg:#0b1020;--card:#141c30;--text:#f0f3ff;--muted:#919bb3;--soft:#202c4c;--border:#29334a}
+button,input{font-family:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+.auth-screen{
+min-height:100vh;display:flex;align-items:center;justify-content:center;
+padding:20px;background:
+radial-gradient(circle at 20% 20%,#536dfe25,transparent 35%),
+radial-gradient(circle at 80% 80%,#536dfe20,transparent 35%),#0b1020;
+}
+.auth-card{
+width:100%;max-width:420px;background:#141c30;
+padding:35px 27px;border:1px solid #293957;
+border-radius:20px;color:white;box-shadow:0 20px 80px #0005;
+}
+.auth-logo{text-align:center;font-size:30px;font-weight:800;letter-spacing:-2px}
+.auth-logo span{color:#8292ff}
+.auth-sub{text-align:center;color:#94a0bd;font-size:11px;letter-spacing:3px;margin-top:6px}
+.auth-title{text-align:center;margin:32px 0 7px;font-size:23px}
+.auth-desc{text-align:center;color:#94a0bd;font-size:12px;margin-bottom:25px}
+.auth-card label{display:block;font-size:11px;color:#c5cce0;margin:15px 0 8px}
+.auth-card input{
+width:100%;padding:14px;background:#0d1528;border:1px solid #30405f;
+border-radius:9px;color:white;outline:none;font-size:12px;
+}
+.auth-card input:focus{border-color:#8192ff}
+.primary-btn{
+width:100%;padding:14px;background:#536dfe;color:white;
+border:0;border-radius:9px;font-weight:700;font-size:12px;margin-top:22px;
+}
+.auth-switch{text-align:center;color:#aab5cc;font-size:11px;margin-top:20px}
+.auth-switch button{background:none;color:#91a2ff;border:0;font-weight:700}
+.auth-error{color:#ff8a8a;font-size:11px;margin-top:12px;line-height:1.6}
+.auth-note{color:#8490aa;font-size:10px;text-align:center;margin-top:20px;line-height:1.7}
+
+/* CONTACT DEVELOPER */
+.developer-contact{
+margin-top:25px;padding:18px;background:var(--card);
+border:1px solid var(--border);border-radius:12px;text-align:center;
+}
+.developer-contact h3{font-size:13px;margin-bottom:7px}
+.developer-contact p{font-size:10px;color:var(--muted);margin-bottom:15px;line-height:1.7}
+.developer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.developer-links a{
+text-decoration:none;padding:11px 14px;border-radius:8px;
+background:var(--soft);color:var(--primary);font-size:11px;
+font-weight:700;transition:.2s;
+}
+.developer-links a:hover{transform:translateY(-2px);opacity:.8}
+.auth-card .developer-contact{background:#0d1528;border-color:#30405f}
+.auth-card .developer-contact h3{color:white}
+.auth-card .developer-contact p{color:#94a0bd}
+
+/* APP */
+.layout{display:flex;min-height:100vh}
+.sidebar{
+width:235px;background:#10182d;color:white;padding:27px 17px;
+position:fixed;height:100vh;display:flex;flex-direction:column;z-index:5;
+}
+.logo{font-size:23px;font-weight:800;letter-spacing:-1px;padding:0 12px 35px}
+.logo span{color:#8292ff}
+.logo small{display:block;font-size:9px;letter-spacing:3px;color:#8998b6;margin-top:5px}
+.nav-label{font-size:10px;color:#71809f;letter-spacing:2px;padding:0 13px;margin:13px 0}
+.nav-item{
+width:100%;padding:13px;background:transparent;color:#aab5cc;
+border:0;border-radius:9px;text-align:left;font-size:12px;
+display:flex;gap:12px;align-items:center;margin-bottom:5px;
+}
+.nav-item.active,.nav-item:hover{background:#29375b;color:white}
+.nav-item.active{box-shadow:inset 3px 0 #8192ff}
+.sidebar-bottom{margin-top:auto;background:#1d2945;padding:15px;border-radius:12px}
+.sidebar-bottom strong{font-size:13px}
+.sidebar-bottom p{font-size:10px;color:#aebbd4;line-height:1.7;margin-top:6px}
+
+.main{margin-left:235px;width:calc(100% - 235px);padding:27px 32px;max-width:1600px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:12px}
+.mobile-logo{display:none;font-size:19px;font-weight:800}
+.search{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;width:300px}
+.search input{border:0;outline:0;background:transparent;color:var(--text);width:90%;font-size:12px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:40px;height:40px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px}
+.avatar{width:40px;height:40px;background:#e7eaff;color:#536dfe;border-radius:12px;display:grid;place-items:center;font-weight:800}
+.page{display:none;animation:fade .3s}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.greeting{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+.greeting h1{font-size:24px;font-weight:800;letter-spacing:-1px}
+.greeting p{font-size:12px;color:var(--muted);margin-top:7px}
+.date{background:var(--card);border:1px solid var(--border);padding:11px;border-radius:9px;font-size:10px;color:var(--muted)}
+.hero{background:linear-gradient(120deg,#344bd7,#7188ff);padding:29px;border-radius:16px;color:white;margin-bottom:24px}
+.hero small{font-size:10px;letter-spacing:2px}
+.hero h2{font-size:25px;margin:13px 0;line-height:1.4}
+.hero p{font-size:12px;line-height:1.8;max-width:400px;opacity:.85}
+.hero button,.course button,.quiz-action{
+background:white;color:#4055d7;padding:11px 17px;border:0;
+border-radius:8px;font-size:11px;font-weight:700;margin-top:17px
+}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:25px}
+.stat{background:var(--card);border:1px solid var(--border);padding:17px;border-radius:12px}
+.stat-icon{width:36px;height:36px;background:var(--soft);border-radius:9px;display:grid;place-items:center;margin-bottom:13px}
+.stat h3{font-size:22px}
+.stat p{font-size:10px;color:var(--muted);margin-top:5px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 15px}
+.section-head h2{font-size:16px}
+.section-head button{border:0;background:none;color:var(--primary);font-size:11px}
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.subject{background:var(--card);border:1px solid var(--border);padding:17px;border-radius:12px;cursor:pointer}
+.subject:hover{border-color:var(--primary);transform:translateY(-2px)}
+.subject-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:10px;margin-bottom:12px;font-size:19px}
+.subject h3{font-size:12px}
+.subject p{font-size:10px;color:var(--muted);margin-top:6px}
+.blue{background:#edf0ff}.green{background:#e6f8ef}.orange{background:#fff1e7}
+.purple{background:#f1eaff}.pink{background:#ffeaf2}.yellow{background:#fff6d9}
+.progress-box,.panel{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:12px}
+.progress-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:12px}
+.progress-row span{color:var(--muted)}
+.bar{height:7px;background:var(--soft);border-radius:20px;overflow:hidden}
+.bar div{height:100%;background:linear-gradient(90deg,#536dfe,#91a1ff);transition:.3s}
+.course-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.course{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:19px}
+.course-tag{font-size:9px;color:var(--primary);background:var(--soft);padding:6px 9px;border-radius:5px;display:inline-block;margin-bottom:12px}
+.course h3{font-size:14px;margin-bottom:8px}
+.course p{font-size:11px;color:var(--muted);line-height:1.8}
+.course button{background:var(--primary);color:white}
+.course button.done{background:#1ca56d}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.filters button{padding:9px 13px;border-radius:7px;background:var(--card);color:var(--text);border:1px solid var(--border);font-size:10px}
+.filters button.active{background:var(--primary);color:white;border-color:var(--primary)}
+.lesson-content{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:23px;line-height:1.9}
+.lesson-content h2{font-size:21px;margin:13px 0}
+.lesson-content h3{font-size:14px;margin:20px 0 8px}
+.lesson-content p,.lesson-content li{font-size:12px;color:var(--muted)}
+.lesson-content ul{padding-left:20px}
+.lesson-content .primary-btn{max-width:230px}
+.quiz-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:23px;max-width:720px}
+.quiz-meta{font-size:11px;color:var(--primary);font-weight:700;margin-bottom:17px}
+.quiz-box h2{font-size:17px;line-height:1.7;margin:20px 0}
+.answers{display:grid;gap:10px}
+.answer{padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:9px;text-align:left;color:var(--text);font-size:12px}
+.answer.selected{border-color:var(--primary);background:var(--soft)}
+.answer.correct{border-color:#21b875;background:#21b87520}
+.answer.wrong{border-color:#e75b5b;background:#e75b5b20}
+.feedback{font-size:11px;line-height:1.7;margin-top:15px;color:var(--muted)}
+.quiz-action{background:var(--primary);color:white}
+.quiz-action:disabled{opacity:.4;cursor:not-allowed}
+.quiz-result{text-align:center;padding:20px}
+.quiz-result h2{font-size:38px;color:var(--primary)}
+.quiz-result p{font-size:12px;color:var(--muted);margin:12px}
+.schedule-item{display:flex;gap:16px;padding:17px 0;border-bottom:1px solid var(--border)}
+.schedule-item:last-child{border:0}
+.time{min-width:60px;font-size:12px;color:var(--primary);font-weight:800}
+.schedule-item h3{font-size:12px}
+.schedule-item p{font-size:10px;color:var(--muted);margin-top:5px}
+.mobile-nav{display:none}
+
+@media(max-width:900px){
+.sidebar{width:200px}
+.main{margin-left:200px;width:calc(100% - 200px);padding:22px}
+.stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+.sidebar{display:none}
+.main{margin:0;width:100%;padding:17px 14px 95px}
+.mobile-logo{display:block}
+.search{display:none}
+.mobile-nav{display:flex;position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-top:1px solid var(--border);justify-content:space-around;padding:10px 3px calc(10px + env(safe-area-inset-bottom));z-index:10}
+.mobile-nav button{background:none;border:0;color:var(--muted);font-size:9px;display:grid;gap:4px;justify-items:center}
+.mobile-nav button span{font-size:19px}
+.mobile-nav button.active{color:var(--primary)}
+.greeting h1{font-size:20px}
+.hero{padding:22px}
+.hero h2{font-size:21px}
+.subjects{grid-template-columns:repeat(2,1fr)}
+.course-grid{grid-template-columns:1fr}
+.quiz-box{padding:17px}
+}
+</style>
+</head>
+
+<body>
+
+<section id="authScreen" class="auth-screen">
+<div class="auth-card">
+<div class="auth-logo">TINO<span>.</span></div>
+<div class="auth-sub">SMART LEARNING PLATFORM</div>
+
+<div id="loginForm">
+<h2 class="auth-title">Welcome Back!</h2>
+<p class="auth-desc">Masuk untuk melanjutkan perjalanan belajarmu.</p>
+<label>Username</label>
+<input id="loginUser" placeholder="Masukkan username" autocomplete="username">
+<label>Password</label>
+<input id="loginPass" type="password" placeholder="Masukkan password" autocomplete="current-password">
+<button class="primary-btn" onclick="login()">MASUK SEKARANG →</button>
+<div class="auth-error" id="loginError"></div>
+<div class="auth-switch">Belum punya akun? <button onclick="switchAuth('register')">Daftar sekarang</button></div>
+</div>
+
+<div id="registerForm" class="hidden">
+<h2 class="auth-title">Buat Akun Baru</h2>
+<p class="auth-desc">Daftar dan mulai belajar bersama TINO.</p>
+<label>Nama lengkap</label>
+<input id="regName" placeholder="Masukkan nama lengkap">
+<label>Username</label>
+<input id="regUsername" placeholder="Contoh: tino123" autocomplete="username">
+<label>Password</label>
+<input id="regPass" type="password" placeholder="Minimal 6 karakter" autocomplete="new-password">
+<button class="primary-btn" onclick="register()">BUAT AKUN →</button>
+<div class="auth-error" id="regError"></div>
+<div class="auth-switch">Sudah punya akun? <button onclick="switchAuth('login')">Login</button></div>
+</div>
+
+<div class="developer-contact">
+<h3>CONTACT DEVELOPER</h3>
+<p>Ada pertanyaan atau masukan? Hubungi developer TINO.</p>
+<div class="developer-links">
+<a href="https://wa.me/6285923060761" target="_blank" rel="noopener noreferrer">💬 WhatsApp Developer</a>
+<a href="https://instagram.com/antkasng12" target="_blank" rel="noopener noreferrer">📸 Instagram @antkasng12</a>
+</div>
+</div>
+<p class="auth-note">TINO SMART LEARNING © 2026<br>SMART LEARNING PLATFORM</p>
+</div>
+</section>
+
+<div id="app" class="layout hidden">
+<aside class="sidebar">
+<div class="logo">TINO<span>.</span><small>SMART LEARNING</small></div>
+<div class="nav-label">MENU UTAMA</div>
+<button class="nav-item active" onclick="showPage('dashboard')">⌂　Dashboard</button>
+<button class="nav-item" onclick="showPage('materi')">▤　Materi Belajar</button>
+<button class="nav-item" onclick="showPage('kuis')">✎　Kuis & Latihan</button>
+<button class="nav-item" onclick="showPage('jadwal')">▦　Jadwal Belajar</button>
+<div class="nav-label">LAINNYA</div>
+<button class="nav-item" onclick="showPage('progress')">◴　Progress Saya</button>
+<button class="nav-item" onclick="logout()">↪　Keluar</button>
+<div class="sidebar-bottom"><strong>✦ TINO SMART</strong><p>Belajar lebih mudah, cerdas, dan menyenangkan.</p></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div class="mobile-logo">TINO<span style="color:#536dfe">.</span></div>
+<div class="search">⌕ <input id="searchInput" placeholder="Cari materi..." oninput="searchCourses()"></div>
+<div class="top-actions">
+<button class="icon-btn" onclick="toggleDark()">☾</button>
+<div class="avatar" id="avatar">T</div>
+</div>
+</header>
+
+<section class="page active" id="dashboard">
+<div class="greeting">
+<div><h1>Halo, <span id="welcomeName">Pelajar</span>! 👋</h1><p>Siap meningkatkan pengetahuanmu hari ini?</p></div>
+<div class="date" id="date"></div>
+</div>
+<div class="hero">
+<small>WELCOME TO TINO SMART LEARNING</small>
+<h2>Belajar Cerdas,<br>Raih Masa Depan.</h2>
+<p>Temukan materi, kerjakan latihan, dan tingkatkan kemampuanmu setiap hari.</p>
+<button onclick="showPage('materi')">Mulai Belajar →</button>
+</div>
+<div class="stats">
+<div class="stat"><div class="stat-icon">📚</div><h3 id="statLessons">0</h3><p>Materi selesai</p></div>
+<div class="stat"><div class="stat-icon">✏️</div><h3 id="statQuiz">0</h3><p>Kuis dikerjakan</p></div>
+<div class="stat"><div class="stat-icon">🏆</div><h3 id="statScore">0</h3><p>Total poin</p></div>
+<div class="stat"><div class="stat-icon">📈</div><h3 id="statProgress">0%</h3><p>Progress belajar</p></div>
+</div>
+<div class="section-head"><h2>Kategori Pembelajaran</h2><button onclick="showPage('materi')">Lihat semua →</button></div>
+<div class="subjects">
+<div class="subject" onclick="filterSubject('Matematika')"><div class="subject-icon blue">📐</div><h3>Matematika</h3><p>Logika dan hitungan</p></div>
+<div class="subject" onclick="filterSubject('IPA')"><div class="subject-icon green">🔬</div><h3>IPA</h3><p>Ilmu pengetahuan alam</p></div>
+<div class="subject" onclick="filterSubject('IPS')"><div class="subject-icon orange">🌍</div><h3>IPS</h3><p>Sejarah dan sosial</p></div>
+<div class="subject" onclick="filterSubject('Bahasa Indonesia')"><div class="subject-icon purple">📖</div><h3>Bahasa Indonesia</h3><p>Membaca dan menulis</p></div>
+<div class="subject" onclick="filterSubject('Bahasa Inggris')"><div class="subject-icon pink">🌐</div><h3>Bahasa Inggris</h3><p>English learning</p></div>
+<div class="subject" onclick="filterSubject('Informatika')"><div class="subject-icon yellow">💻</div><h3>Informatika</h3><p>Teknologi dan coding</p></div>
+</div>
+<div class="section-head"><h2>Progress Belajar</h2></div>
+<div class="progress-box">
+<div class="progress-row"><strong>Keseluruhan materi</strong><span id="progressText">0%</span></div>
+<div class="bar"><div id="progressBar" style="width:0%"></div></div>
+</div>
+</section>
+
+<section class="page" id="materi">
+<div class="greeting"><div><h1>Materi Belajar 📚</h1><p>Pilih materi untuk membaca pembelajaran.</p></div></div>
+<div class="filters">
+<button class="active" onclick="filterLevel('Semua',this)">Semua</button>
+<button onclick="filterLevel('SD',this)">SD</button>
+<button onclick="filterLevel('SMP',this)">SMP</button>
+<button onclick="filterLevel('SMA',this)">SMA</button>
+</div>
+<div class="course-grid" id="courseGrid"></div>
+</section>
+
+<section class="page" id="detail">
+<div class="greeting"><div><h1 id="lessonTitle">Materi</h1><p id="lessonSub">Pembelajaran</p></div></div>
+<div class="lesson-content" id="lessonContent"></div>
+</section>
+
+<section class="page" id="kuis">
+<div class="greeting"><div><h1>Kuis & Latihan ✏️</h1><p>Setiap kuis berisi 10 soal pilihan ganda.</p></div></div>
+<div id="quizSelection" class="course-grid">
+<div class="course"><div class="course-tag">10 SOAL</div><h3>📐 Matematika</h3><p>Uji kemampuan berhitung dan logikamu.</p><button onclick="startQuiz('Matematika')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🔬 IPA</h3><p>Uji pengetahuan sains dan alam.</p><button onclick="startQuiz('IPA')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🌐 Bahasa Inggris</h3><p>Uji vocabulary dan grammar.</p><button onclick="startQuiz('Bahasa Inggris')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🌍 IPS</h3><p>Uji pengetahuan sosial dan ekonomi.</p><button onclick="startQuiz('IPS')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>📖 Bahasa Indonesia</h3><p>Uji kemampuan bahasa dan sastra.</p><button onclick="startQuiz('Bahasa Indonesia')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>💻 Informatika</h3><p>Uji pengetahuan komputer dan teknologi.</p><button onclick="startQuiz('Informatika')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🏛️ PPKn</h3><p>Uji pengetahuan kewarganegaraan.</p><button onclick="startQuiz('PPKn')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>📜 Sejarah</h3><p>Uji pengetahuan sejarah dunia dan Indonesia.</p><button onclick="startQuiz('Sejarah')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🗺️ Geografi</h3><p>Uji pengetahuan bumi dan lingkungan.</p><button onclick="startQuiz('Geografi')">Mulai Kuis →</button></div>
+<div class="course"><div class="course-tag">10 SOAL</div><h3>🧬 Biologi</h3><p>Uji pengetahuan makhluk hidup.</p><button onclick="startQuiz('Biologi')">Mulai Kuis →</button></div>
+</div>
+<div id="quizBox" class="quiz-box hidden"></div>
+</section>
+
+<section class="page" id="jadwal">
+<div class="greeting"><div><h1>Jadwal Belajar 🗓️</h1><p>Contoh jadwal belajar harian.</p></div></div>
+<div class="panel">
+<div class="schedule-item"><div class="time">07:00</div><div><h3>Matematika</h3><p>Latihan berhitung dan aljabar</p></div></div>
+<div class="schedule-item"><div class="time">09:00</div><div><h3>Bahasa Inggris</h3><p>Vocabulary dan grammar</p></div></div>
+<div class="schedule-item"><div class="time">13:00</div><div><h3>IPA</h3><p>Belajar sains dan lingkungan</p></div></div>
+<div class="schedule-item"><div class="time">15:00</div><div><h3>Informatika</h3><p>Belajar teknologi dan coding</p></div></div>
+</div>
+</section>
+
+<section class="page" id="progress">
+<div class="greeting"><div><h1>Progress Saya 🏆</h1><p>Riwayat pembelajaran akunmu.</p></div></div>
+<div class="stats">
+<div class="stat"><div class="stat-icon">📚</div><h3 id="pLessons">0</h3><p>Materi selesai</p></div>
+<div class="stat"><div class="stat-icon">✏️</div><h3 id="pQuiz">0</h3><p>Kuis selesai</p></div>
+<div class="stat"><div class="stat-icon">🏆</div><h3 id="pScore">0</h3><p>Total poin</p></div>
+<div class="stat"><div class="stat-icon">📈</div><h3 id="pProgress">0%</h3><p>Progress materi</p></div>
+</div>
+<div class="progress-box">
+<div class="progress-row"><strong>Progress materi</strong><span id="pText">0%</span></div>
+<div class="bar"><div id="pBar" style="width:0%"></div></div>
+</div>
+<div class="section-head"><h2>Riwayat Aktivitas</h2></div>
+<div class="panel" id="history"></div>
+</section>
+
+<div class="developer-contact">
+<h3>CONTACT DEVELOPER</h3>
+<p>Ada pertanyaan atau masukan? Hubungi developer TINO.</p>
+<div class="developer-links">
+<a href="https://wa.me/6285923060761" target="_blank" rel="noopener noreferrer">💬 WhatsApp Developer</a>
+<a href="https://instagram.com/antkasng12" target="_blank" rel="noopener noreferrer">📸 Instagram @antkasng12</a>
+</div>
+</div>
+</main>
+</div>
+
+<nav class="mobile-nav hidden" id="mobileNav">
+<button class="active" onclick="showPage('dashboard')"><span>⌂</span>Home</button>
+<button onclick="showPage('materi')"><span>▤</span>Materi</button>
+<button onclick="showPage('kuis')"><span>✎</span>Kuis</button>
+<button onclick="showPage('jadwal')"><span>▦</span>Jadwal</button>
+<button onclick="showPage('progress')"><span>◴</span>Progress</button>
+</nav>
+
+<script>
+const KEY="TINO_ACCOUNTS_V2";
+let currentUser=null;
+let data=null;
+
+function getAccounts(){
+try{return JSON.parse(localStorage.getItem(KEY))||{}}
+catch(error){return {}}
+}
+function saveAccounts(accounts){
+localStorage.setItem(KEY,JSON.stringify(accounts));
+}
+function switchAuth(type){
+document.getElementById("loginForm").classList.toggle("hidden",type!=="login");
+document.getElementById("registerForm").classList.toggle("hidden",type!=="register");
+document.getElementById("loginError").textContent="";
+document.getElementById("regError").textContent="";
+}
+function hashPassword(password){
+let hash=2166136261;
+for(let i=0;i<password.length;i++){
+hash^=password.charCodeAt(i);
+hash=Math.imul(hash,16777619);
+}
+return (hash>>>0).toString(16);
+}
+function register(){
+const name=document.getElementById("regName").value.trim();
+const username=document.getElementById("regUsername").value.trim().toLowerCase();
+const pass=document.getElementById("regPass").value;
+const err=document.getElementById("regError");
+err.textContent="";
+if(!name||!username||!pass){err.textContent="Semua kolom harus diisi.";return}
+if(!/^[a-z0-9_]{3,20}$/.test(username)){err.textContent="Username harus 3-20 karakter dan hanya boleh memakai huruf, angka, atau _.";return}
+if(pass.length<6){err.textContent="Password minimal 6 karakter.";return}
+const accounts=getAccounts();
+if(accounts[username]){err.textContent="Username sudah digunakan. Silakan pilih username lain.";return}
+accounts[username]={name:name,username:username,passwordHash:hashPassword(pass),data:{lessons:[],quizzes:0,score:0,history:[]}};
+saveAccounts(accounts);
+alert("Pendaftaran berhasil! Silakan login.");
+switchAuth("login");
+document.getElementById("loginUser").value=username;
+document.getElementById("loginPass").value="";
+document.getElementById("regName").value="";
+document.getElementById("regUsername").value="";
+document.getElementById("regPass").value="";
+}
+function login(){
+const username=document.getElementById("loginUser").value.trim().toLowerCase();
+const pass=document.getElementById("loginPass").value;
+const accounts=getAccounts();
+const account=accounts[username];
+if(!account||account.passwordHash!==hashPassword(pass)){
+document.getElementById("loginError").textContent="Username atau password salah.";return;
+}
+currentUser=account.username;
+data=account.data||{lessons:[],quizzes:0,score:0,history:[]};
+data.lessons=Array.isArray(data.lessons)?data.lessons:[];
+data.history=Array.isArray(data.history)?data.history:[];
+data.quizzes=Number(data.quizzes)||0;
+data.score=Number(data.score)||0;
+localStorage.setItem("TINO_SESSION",currentUser);
+openApp();
+}
+function openApp(){
+if(!currentUser||!data)return;
+document.getElementById("authScreen").classList.add("hidden");
+document.getElementById("app").classList.remove("hidden");
+document.getElementById("mobileNav").classList.remove("hidden");
+const account=getAccounts()[currentUser];
+if(!account){logout();return}
+document.getElementById("welcomeName").textContent=account.name;
+document.getElementById("avatar").textContent=account.name.charAt(0).toUpperCase();
+document.getElementById("date").textContent=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"});
+updateStats();
+renderCourses();
+showPage("dashboard");
+}
+function persist(){
+if(!currentUser||!data)return;
+const accounts=getAccounts();
+if(accounts[currentUser]){
+accounts[currentUser].data=data;
+saveAccounts(accounts);
+}
+}
+function logout(){
+persist();
+currentUser=null;data=null;
+localStorage.removeItem("TINO_SESSION");
+document.getElementById("app").classList.add("hidden");
+document.getElementById("mobileNav").classList.add("hidden");
+document.getElementById("authScreen").classList.remove("hidden");
+document.getElementById("loginPass").value="";
+document.getElementById("loginError").textContent="";
+switchAuth("login");
+}
+
+/* NAVIGASI — PERBAIKAN RESET FILTER */
+function showPage(id){
+const page=document.getElementById(id);
+if(!page)return;
+
+/* Jika kembali ke Dashboard, reset filter materi */
+if(id==="dashboard"){
+activeLevel="Semua";
+activeSubject="Semua";
+searchTerm="";
+
+const search=document.getElementById("searchInput");
+if(search)search.value="";
+
+document.querySelectorAll(".filters button").forEach(b=>{
+b.classList.remove("active");
+});
+
+const allButton=document.querySelector(".filters button");
+if(allButton)allButton.classList.add("active");
+
+if(typeof applyCourseFilters==="function"){
+applyCourseFilters();
+}
+}
+
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+page.classList.add("active");
+
+document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+document.querySelectorAll(".mobile-nav button").forEach(b=>b.classList.remove("active"));
+
+const index={dashboard:0,materi:1,kuis:2,jadwal:3,progress:4};
+const i=index[id];
+
+if(i!==undefined){
+const desktopButtons=document.querySelectorAll(".nav-item");
+const mobileButtons=document.querySelectorAll(".mobile-nav button");
+if(desktopButtons[i])desktopButtons[i].classList.add("active");
+if(mobileButtons[i])mobileButtons[i].classList.add("active");
+}
+window.scrollTo(0,0);
+}
+
+/* MATERI */
+const courses=[
+{name:"Operasi Hitung Dasar",subject:"Matematika",level:"SD",desc:"Penjumlahan, pengurangan, perkalian, pembagian.",content:"Operasi hitung merupakan dasar matematika. Ada empat operasi utama yaitu penjumlahan, pengurangan, perkalian, dan pembagian.",points:["Penjumlahan menggabungkan dua bilangan.","Pengurangan mencari selisih dua bilangan.","Perkalian adalah penjumlahan berulang.","Pembagian membagi bilangan menjadi kelompok sama banyak."],example:"Contoh: 8 + 4 = 12, 9 × 3 = 27."},
+{name:"Aljabar Dasar",subject:"Matematika",level:"SMP",desc:"Variabel, koefisien, dan persamaan.",content:"Aljabar adalah cabang matematika yang menggunakan huruf sebagai simbol bilangan yang belum diketahui.",points:["Variabel adalah lambang bilangan, misalnya x.","Koefisien adalah angka di depan variabel.","Konstanta adalah bilangan tanpa variabel."],example:"Contoh: 2x + 3 = 9. Maka x = 3."},
+{name:"Persamaan Kuadrat",subject:"Matematika",level:"SMA",desc:"Memahami persamaan kuadrat.",content:"Persamaan kuadrat adalah persamaan dengan pangkat tertinggi variabel dua.",points:["Bentuk umum ax² + bx + c = 0.","a, b, dan c adalah konstanta.","Penyelesaian dapat menggunakan faktorisasi atau rumus kuadrat."],example:"Contoh: x² - 5x + 6 = 0 memiliki akar 2 dan 3."},
+{name:"Tata Surya",subject:"IPA",level:"SD",desc:"Mengenal planet dan matahari.",content:"Tata surya merupakan kumpulan benda langit yang terikat oleh gravitasi Matahari.",points:["Matahari adalah pusat tata surya.","Terdapat delapan planet.","Bumi merupakan planet tempat kita tinggal."],example:"Urutan planet dimulai dari Merkurius, Venus, Bumi, Mars, Jupiter, Saturnus, Uranus, dan Neptunus."},
+{name:"Sistem Pencernaan",subject:"IPA",level:"SMP",desc:"Organ dan proses pencernaan manusia.",content:"Sistem pencernaan mengolah makanan menjadi zat yang dapat diserap tubuh.",points:["Mulut memulai proses pencernaan.","Lambung mengolah makanan dengan bantuan asam dan enzim.","Usus halus menyerap sebagian besar zat gizi.","Usus besar menyerap air."],example:"Makanan melewati mulut, kerongkongan, lambung, usus halus, lalu usus besar."},
+{name:"Genetika Dasar",subject:"IPA",level:"SMA",desc:"Gen, DNA, dan pewarisan sifat.",content:"Genetika adalah ilmu yang mempelajari pewarisan sifat dari induk kepada keturunannya.",points:["DNA menyimpan informasi genetik.","Gen merupakan bagian DNA.","Kromosom membawa materi genetik."],example:"Warna bunga pada tumbuhan dapat dipengaruhi oleh informasi genetik."},
+{name:"Sejarah Indonesia",subject:"IPS",level:"SD",desc:"Mengenal sejarah kemerdekaan.",content:"Sejarah Indonesia mempelajari perjalanan bangsa dari masa lampau hingga sekarang.",points:["Indonesia memproklamasikan kemerdekaan pada 17 Agustus 1945.","Proklamasi dibacakan oleh Soekarno.","Mohammad Hatta mendampingi Soekarno."],example:"Proklamasi menjadi tonggak penting berdirinya Indonesia sebagai negara merdeka."},
+{name:"Interaksi Sosial",subject:"IPS",level:"SMP",desc:"Hubungan manusia dalam masyarakat.",content:"Interaksi sosial adalah hubungan timbal balik antara individu atau kelompok.",points:["Interaksi membutuhkan kontak sosial.","Komunikasi menyampaikan pesan.","Kerja sama merupakan salah satu bentuk interaksi."],example:"Gotong royong membersihkan lingkungan merupakan bentuk kerja sama."},
+{name:"Ekonomi Dasar",subject:"IPS",level:"SMA",desc:"Produksi, distribusi, konsumsi.",content:"Ilmu ekonomi mempelajari cara manusia memenuhi kebutuhan dengan sumber daya yang terbatas.",points:["Produksi menghasilkan barang atau jasa.","Distribusi menyalurkan barang.","Konsumsi menggunakan barang atau jasa."],example:"Petani menghasilkan beras, pedagang menyalurkannya, dan masyarakat mengonsumsinya."},
+{name:"Teks Deskripsi",subject:"Bahasa Indonesia",level:"SMP",desc:"Struktur dan ciri teks deskripsi.",content:"Teks deskripsi menggambarkan objek secara rinci sehingga pembaca seolah-olah melihat atau merasakannya.",points:["Identifikasi memperkenalkan objek.","Deskripsi bagian menjelaskan detail objek.","Menggunakan kata sifat dan detail pancaindra."],example:"Pantai itu memiliki pasir putih dan air laut berwarna biru."},
+{name:"English Vocabulary",subject:"Bahasa Inggris",level:"SD",desc:"Kosakata bahasa Inggris sehari-hari.",content:"Vocabulary berarti kumpulan kosakata yang digunakan dalam bahasa Inggris.",points:["Book berarti buku.","School berarti sekolah.","Water berarti air.","Friend berarti teman."],example:"I go to school every day berarti saya pergi ke sekolah setiap hari."},
+{name:"Basic Grammar",subject:"Bahasa Inggris",level:"SMP",desc:"Mengenal susunan kalimat.",content:"Grammar merupakan aturan dalam menyusun kata menjadi kalimat yang benar.",points:["Subject adalah pelaku dalam kalimat.","Verb adalah kata kerja.","Object dapat menjadi sasaran tindakan."],example:"She reads a book. She adalah subject, reads adalah verb."},
+{name:"HTML Dasar",subject:"Informatika",level:"SMP",desc:"Membuat struktur halaman web.",content:"HTML adalah bahasa markup yang digunakan untuk menyusun struktur halaman web.",points:["HTML adalah singkatan HyperText Markup Language.","Tag h1 membuat judul.","Tag p membuat paragraf.","Tag a membuat tautan."],example:"<h1>Halo Dunia</h1>"},
+{name:"JavaScript Dasar",subject:"Informatika",level:"SMA",desc:"Variabel, fungsi, dan logika.",content:"JavaScript adalah bahasa pemrograman yang dapat membuat halaman web menjadi interaktif.",points:["let dan const digunakan untuk membuat variabel.","function digunakan untuk mendefinisikan fungsi.","if digunakan untuk percabangan."],example:"let nama = 'Tino'; console.log(nama);"}
+];
+
+let activeLevel="Semua";
+let activeSubject="Semua";
+let searchTerm="";
+
+function renderCourses(list){
+const grid=document.getElementById("courseGrid");
+if(!grid)return;
+if(!list.length){grid.innerHTML="<p>Materi tidak ditemukan.</p>";return}
+grid.innerHTML=list.map(c=>{
+const done=data.lessons.includes(c.name);
+return `<div class="course"><div class="course-tag">${c.level} • ${c.subject}</div><h3>${c.name}</h3><p>${c.desc}</p><button class="${done?'done':''}" onclick="openLesson('${c.name}')">${done?'✓ Sudah dipelajari':'Buka materi →'}</button></div>`;
+}).join("");
+}
+function applyCourseFilters(){
+let list=courses;
+if(activeLevel!=="Semua")list=list.filter(c=>c.level===activeLevel);
+if(activeSubject!=="Semua")list=list.filter(c=>c.subject===activeSubject);
+if(searchTerm)list=list.filter(c=>(c.name+" "+c.subject+" "+c.level).toLowerCase().includes(searchTerm));
+renderCourses(list);
+}
+function filterLevel(level,btn){
+activeLevel=level;
+document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+applyCourseFilters();
+}
+function filterSubject(subject){
+activeSubject=subject;
+activeLevel="Semua";
+searchTerm="";
+document.getElementById("searchInput").value="";
+document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+const allButton=document.querySelector(".filters button");
+if(allButton)allButton.classList.add("active");
+showPage("materi");
+applyCourseFilters();
+}
+function searchCourses(){
+searchTerm=document.getElementById("searchInput").value.trim().toLowerCase();
+activeSubject="Semua";
+activeLevel="Semua";
+document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+const allButton=document.querySelector(".filters button");
+if(allButton)allButton.classList.add("active");
+showPage("materi");
+applyCourseFilters();
+}
+function openLesson(name){
+const c=courses.find(x=>x.name===name);
+if(!c)return;
+showPage("detail");
+document.getElementById("lessonTitle").textContent=c.name;
+document.getElementById("lessonSub").textContent=c.level+" • "+c.subject;
+const done=data.lessons.includes(c.name);
+document.getElementById("lessonContent").innerHTML=`
+<div class="course-tag">${c.level} • ${c.subject}</div>
+<h2>${c.name}</h2><p>${c.content}</p>
+<h3>Hal yang perlu dipahami</h3>
+<ul>${c.points.map(p=>"<li>"+p+"</li>").join("")}</ul>
+<h3>Contoh</h3><p>${escapeHTML(c.example)}</p>
+<h3>Sudah selesai membaca?</h3>
+<p>Pelajari isi materi terlebih dahulu. Setelah memahami materi, kamu bisa menandainya sebagai selesai.</p>
+<button class="primary-btn" onclick="completeLesson('${c.name}')">${done?'Materi sudah selesai ✓':'Tandai materi selesai'}</button>`;
+}
+function completeLesson(name){
+if(!data.lessons.includes(name)){
+data.lessons.push(name);
+addHistory("Menyelesaikan materi: "+name);
+}
+alert("Materi berhasil diselesaikan!");
+openLesson(name);
+renderCourses(courses.filter(c=>
+(activeLevel==="Semua"||c.level===activeLevel)&&
+(activeSubject==="Semua"||c.subject===activeSubject)&&
+(!searchTerm||(c.name+" "+c.subject+" "+c.level).toLowerCase().includes(searchTerm))
+));
+}
+
+/* KUIS - 10 KATEGORI, MASING-MASING 10 SOAL */
+const quizData={
+"Matematika":[
+["Hasil dari 12 + 8 adalah...",["18","20","22","24"],1,"12 ditambah 8 sama dengan 20."],
+["Hasil dari 9 × 7 adalah...",["56","63","72","49"],1,"9 dikali 7 sama dengan 63."],
+["Hasil dari 100 ÷ 4 adalah...",["20","25","30","40"],1,"100 dibagi 4 sama dengan 25."],
+["Nilai x pada x + 5 = 12 adalah...",["5","6","7","8"],2,"12 dikurangi 5 menghasilkan 7."],
+["Luas persegi dengan sisi 6 cm adalah...",["12 cm²","24 cm²","30 cm²","36 cm²"],3,"Luas persegi adalah sisi dikali sisi."],
+["Hasil dari 3² adalah...",["6","9","12","18"],1,"3 pangkat 2 sama dengan 3 dikali 3."],
+["Bilangan prima berikut adalah...",["9","15","17","21"],2,"17 hanya memiliki dua faktor positif, yaitu 1 dan 17."],
+["Hasil dari ½ + ½ adalah...",["½","1","2","3"],1,"Setengah ditambah setengah sama dengan satu."],
+["Keliling persegi dengan sisi 5 cm adalah...",["10 cm","15 cm","20 cm","25 cm"],2,"Keliling persegi adalah 4 dikali sisi."],
+["Hasil dari 25% × 200 adalah...",["25","40","50","75"],2,"25 persen dari 200 adalah 50."]
+],
+"IPA":[
+["Planet tempat manusia tinggal adalah...",["Mars","Venus","Bumi","Jupiter"],2,"Bumi merupakan tempat tinggal manusia."],
+["Sumber energi utama bagi Bumi adalah...",["Bulan","Matahari","Angin","Bintang lain"],1,"Matahari memberikan cahaya dan panas."],
+["Organ untuk memompa darah adalah...",["Paru-paru","Jantung","Ginjal","Lambung"],1,"Jantung memompa darah ke seluruh tubuh."],
+["Proses tumbuhan membuat makanan disebut...",["Respirasi","Fotosintesis","Evaporasi","Adaptasi"],1,"Fotosintesis menggunakan cahaya untuk membuat makanan."],
+["Air membeku pada suhu...",["0°C","10°C","50°C","100°C"],0,"Pada tekanan normal, air membeku pada 0°C."],
+["Gas yang dibutuhkan manusia untuk bernapas adalah...",["Karbon dioksida","Nitrogen","Oksigen","Helium"],2,"Manusia menggunakan oksigen dalam respirasi."],
+["Pusat tata surya adalah...",["Bumi","Mars","Matahari","Bulan"],2,"Planet mengelilingi Matahari."],
+["Alat untuk mengukur suhu adalah...",["Barometer","Termometer","Penggaris","Kompas"],1,"Termometer digunakan mengukur suhu."],
+["Perubahan cair menjadi gas disebut...",["Membeku","Mencair","Menguap","Mengembun"],2,"Penguapan mengubah zat cair menjadi gas."],
+["Hewan pemakan tumbuhan disebut...",["Karnivora","Herbivora","Omnivora","Predator"],1,"Herbivora memperoleh makanan dari tumbuhan."]
+],
+"Bahasa Inggris":[
+["Arti kata 'Book' adalah...",["Meja","Buku","Kursi","Pintu"],1,"Book berarti buku."],
+["Bahasa Inggris dari 'Air' adalah...",["Fire","Earth","Water","Wind"],2,"Water berarti air."],
+["Arti kata 'Beautiful' adalah...",["Cantik","Sedih","Cepat","Kecil"],0,"Beautiful berarti indah atau cantik."],
+["I ___ a student.",["am","is","are","be"],0,"I berpasangan dengan am."],
+["Bentuk jamak dari 'Child' adalah...",["Childs","Children","Childes","Childrens"],1,"Bentuk jamak tidak beraturan dari child adalah children."],
+["Bahasa Inggris dari 'Makan' adalah...",["Drink","Sleep","Eat","Walk"],2,"Eat berarti makan."],
+["She ___ to school every day.",["go","goes","going","gone"],1,"She menggunakan kata kerja goes dalam simple present."],
+["Arti 'Good Morning' adalah...",["Selamat malam","Selamat pagi","Selamat sore","Selamat tinggal"],1,"Good Morning berarti selamat pagi."],
+["Lawan kata 'Big' adalah...",["Tall","Long","Small","Wide"],2,"Small berarti kecil."],
+["What is your name? artinya...",["Berapa umurmu?","Siapa namamu?","Di mana rumahmu?","Apa kabarmu?"],1,"What is your name berarti siapa namamu?"]
+],
+"IPS":[
+["Kegiatan menghasilkan barang atau jasa disebut...",["Distribusi","Produksi","Konsumsi","Komunikasi"],1,"Produksi adalah kegiatan menghasilkan barang atau jasa."],
+["Orang yang menggunakan barang atau jasa disebut...",["Produsen","Distributor","Konsumen","Investor"],2,"Konsumen adalah pengguna barang atau jasa."],
+["Contoh sumber daya alam yang dapat diperbarui adalah...",["Minyak bumi","Batu bara","Matahari","Gas alam"],2,"Energi matahari tersedia secara alami dan terus diperbarui."],
+["Kegiatan menyalurkan barang dari produsen ke konsumen disebut...",["Produksi","Distribusi","Konsumsi","Promosi"],1,"Distribusi adalah proses penyaluran barang."],
+["Kerja bersama untuk kepentingan umum disebut...",["Persaingan","Konflik","Gotong royong","Perselisihan"],2,"Gotong royong merupakan bentuk kerja sama."],
+["Tempat bertemunya penjual dan pembeli disebut...",["Sekolah","Pasar","Rumah sakit","Terminal"],1,"Pasar merupakan tempat kegiatan jual beli."],
+["Indonesia terletak di antara dua benua, yaitu...",["Asia dan Australia","Asia dan Eropa","Afrika dan Asia","Australia dan Eropa"],0,"Indonesia berada di antara Benua Asia dan Australia."],
+["Kebutuhan utama manusia disebut kebutuhan...",["Tersier","Sekunder","Primer","Tambahan"],2,"Kebutuhan primer meliputi pangan, sandang, dan papan."],
+["Kegiatan membeli barang termasuk kegiatan...",["Produksi","Distribusi","Konsumsi","Ekspor"],2,"Membeli dan menggunakan barang merupakan kegiatan konsumsi."],
+["Contoh interaksi sosial di sekolah adalah...",["Tidur sendiri","Diskusi kelompok","Membaca sendirian","Menonton televisi"],1,"Diskusi melibatkan hubungan dan komunikasi antarsiswa."]
+],
+"Bahasa Indonesia":[
+["Gagasan utama dalam sebuah paragraf disebut...",["Kalimat penjelas","Ide pokok","Kata hubung","Kesimpulan"],1,"Ide pokok merupakan inti pembahasan paragraf."],
+["Tanda baca untuk mengakhiri kalimat berita adalah...",["Tanda tanya","Tanda seru","Titik","Koma"],2,"Kalimat berita umumnya diakhiri tanda titik."],
+["Sinonim kata 'indah' adalah...",["Buruk","Elok","Kasar","Gelap"],1,"Elok memiliki makna yang mirip dengan indah."],
+["Antonim kata 'tinggi' adalah...",["Panjang","Rendah","Besar","Lebar"],1,"Rendah merupakan lawan kata tinggi."],
+["Teks yang berisi langkah-langkah melakukan sesuatu disebut...",["Narasi","Deskripsi","Prosedur","Eksposisi"],2,"Teks prosedur menjelaskan tahapan melakukan sesuatu."],
+["Tokoh yang memiliki peran utama dalam cerita disebut...",["Tokoh utama","Figuran","Penonton","Narator"],0,"Tokoh utama menjadi pusat cerita."],
+["Kalimat yang berisi pertanyaan diakhiri dengan...",["Titik","Koma","Tanda tanya","Tanda petik"],2,"Kalimat tanya menggunakan tanda tanya."],
+["Puisi biasanya tersusun atas...",["Bab dan subbab","Bait dan larik","Paragraf panjang","Dialog"],1,"Puisi tersusun atas bait dan larik."],
+["Kata baku yang benar adalah...",["Apotik","Apotek","Apotick","Apoték"],1,"Bentuk baku menurut bahasa Indonesia adalah apotek."],
+["Ringkasan dibuat dengan tujuan...",["Memperpanjang cerita","Mengambil inti bacaan","Mengubah semua tokoh","Menambah konflik"],1,"Ringkasan menyampaikan pokok informasi secara singkat."]
+],
+"Informatika":[
+["Kepanjangan HTML adalah...",["HyperText Markup Language","HighText Machine Language","HyperTool Main Link","Home Text Markup Link"],0,"HTML adalah HyperText Markup Language."],
+["Perangkat untuk mengetik pada komputer adalah...",["Monitor","Keyboard","Speaker","Printer"],1,"Keyboard digunakan untuk memasukkan teks dan perintah."],
+["Otak utama komputer disebut...",["CPU","Mouse","RAM","Monitor"],0,"CPU memproses instruksi komputer."],
+["Ekstensi umum file HTML adalah...",[".jpg",".mp3",".html",".pdf"],2,"File HTML umumnya menggunakan ekstensi .html."],
+["CSS digunakan untuk...",["Mengatur tampilan halaman web","Mengolah suara","Menghapus sistem operasi","Mengirim email"],0,"CSS mengatur desain dan tampilan halaman web."],
+["Perangkat lunak disebut juga...",["Hardware","Software","Brainware","Firmware saja"],1,"Software adalah perangkat lunak."],
+["Contoh browser adalah...",["Google Chrome","Microsoft Word","Paint","Calculator"],0,"Google Chrome merupakan aplikasi browser."],
+["Dalam JavaScript, kata untuk membuat variabel yang dapat diubah adalah...",["const","let","fixed","static"],1,"let digunakan untuk membuat variabel yang nilainya dapat diubah."],
+["Alat untuk menggerakkan pointer komputer adalah...",["Printer","Scanner","Mouse","Speaker"],2,"Mouse digunakan untuk menggerakkan pointer."],
+["Internet merupakan jaringan yang menghubungkan...",["Komputer dan perangkat di seluruh dunia","Hanya satu komputer","Hanya printer","Hanya keyboard"],0,"Internet menghubungkan banyak jaringan dan perangkat."]
+],
+"PPKn":[
+["Dasar negara Indonesia adalah...",["Pancasila","UUD 1945","Bhinneka Tunggal Ika","Garuda"],0,"Pancasila merupakan dasar negara Indonesia."],
+["Jumlah sila dalam Pancasila adalah...",["Tiga","Empat","Lima","Enam"],2,"Pancasila memiliki lima sila."],
+["Lambang negara Indonesia adalah...",["Harimau","Garuda Pancasila","Merpati","Elang Jawa"],1,"Lambang negara Indonesia adalah Garuda Pancasila."],
+["Semboyan Bhinneka Tunggal Ika memiliki arti...",["Bersatu kita teguh","Berbeda-beda tetapi tetap satu","Maju terus","Bersama membangun"],1,"Semboyan ini mengajarkan persatuan dalam keberagaman."],
+["Undang-Undang Dasar negara Indonesia adalah...",["UUD 1945","UUD 1950","UUD 1965","UUD 2000"],0,"Konstitusi Indonesia adalah UUD Negara Republik Indonesia Tahun 1945."],
+["Musyawarah bertujuan mencapai...",["Pertengkaran","Mufakat","Persaingan","Perpecahan"],1,"Musyawarah dilakukan untuk mencapai kesepakatan bersama."],
+["Contoh sikap menghargai perbedaan adalah...",["Memaksakan pendapat","Mengejek teman","Menghormati keyakinan orang lain","Menolak berteman"],2,"Menghormati perbedaan menjaga kerukunan."],
+["Hak dan kewajiban sebaiknya dilaksanakan secara...",["Tidak seimbang","Bersamaan dan bertanggung jawab","Sembarangan","Terpisah selamanya"],1,"Hak dan kewajiban perlu dijalankan secara seimbang."],
+["Sila ketiga Pancasila berbunyi...",["Ketuhanan Yang Maha Esa","Kemanusiaan yang adil dan beradab","Persatuan Indonesia","Keadilan sosial bagi seluruh rakyat Indonesia"],2,"Sila ketiga adalah Persatuan Indonesia."],
+["Contoh kewajiban siswa di sekolah adalah...",["Mendapat nilai","Menggunakan fasilitas","Mematuhi tata tertib","Mendapat pelajaran"],2,"Mematuhi tata tertib merupakan kewajiban siswa."]
+],
+"Sejarah":[
+["Proklamasi kemerdekaan Indonesia dibacakan pada tanggal...",["17 Agustus 1945","10 November 1945","1 Juni 1945","20 Mei 1908"],0,"Proklamasi dibacakan pada 17 Agustus 1945."],
+["Tokoh yang membacakan teks proklamasi adalah...",["Mohammad Hatta","Soekarno","Ki Hajar Dewantara","Sutan Sjahrir"],1,"Soekarno membacakan teks proklamasi."],
+["Wakil presiden pertama Indonesia adalah...",["Mohammad Hatta","Soedirman","Ahmad Yani","Mohammad Yamin"],0,"Mohammad Hatta merupakan wakil presiden pertama."],
+["Hari Kebangkitan Nasional diperingati setiap...",["2 Mei","20 Mei","1 Juni","28 Oktober"],1,"Hari Kebangkitan Nasional diperingati pada 20 Mei."],
+["Organisasi Budi Utomo berdiri pada tahun...",["1908","1928","1945","1950"],0,"Budi Utomo berdiri pada 20 Mei 1908."],
+["Sumpah Pemuda diperingati setiap tanggal...",["17 Agustus","10 November","28 Oktober","1 Oktober"],2,"Sumpah Pemuda diikrarkan pada 28 Oktober 1928."],
+["Candi Borobudur merupakan peninggalan agama...",["Hindu","Buddha","Islam","Kristen"],1,"Borobudur merupakan candi Buddha."],
+["Peristiwa Rengasdengklok terjadi menjelang...",["Perang Diponegoro","Proklamasi kemerdekaan","Kongres Pemuda","Sumpah Pemuda"],1,"Peristiwa itu terjadi menjelang proklamasi kemerdekaan."],
+["Pahlawan yang dikenal sebagai Bapak Pendidikan Nasional adalah...",["Ki Hajar Dewantara","Pattimura","Pangeran Antasari","Cut Nyak Dien"],0,"Ki Hajar Dewantara dikenal sebagai Bapak Pendidikan Nasional."],
+["Hari Pahlawan diperingati setiap tanggal...",["1 Juni","17 Agustus","10 November","21 April"],2,"Hari Pahlawan memperingati peristiwa 10 November 1945."]
+],
+"Geografi":[
+["Planet tempat kita tinggal adalah...",["Mars","Bumi","Venus","Jupiter"],1,"Bumi adalah planet tempat kehidupan manusia."],
+["Benua terbesar di dunia adalah...",["Afrika","Eropa","Asia","Australia"],2,"Asia merupakan benua terbesar berdasarkan luas wilayah."],
+["Samudra terluas di dunia adalah...",["Atlantik","Hindia","Arktik","Pasifik"],3,"Samudra Pasifik merupakan samudra terluas."],
+["Gunung tertinggi di dunia adalah...",["Kilimanjaro","Everest","Fuji","Elbrus"],1,"Gunung Everest merupakan puncak tertinggi di atas permukaan laut."],
+["Garis khayal yang membagi bumi menjadi belahan utara dan selatan disebut...",["Garis bujur","Garis lintang","Garis khatulistiwa","Garis tanggal"],2,"Garis khatulistiwa berada pada lintang nol derajat."],
+["Indonesia memiliki iklim...",["Tropis","Kutub","Gurun","Sedang"],0,"Indonesia berada di wilayah tropis."],
+["Arah mata angin di antara utara dan timur adalah...",["Barat laut","Tenggara","Timur laut","Barat daya"],2,"Timur laut berada di antara utara dan timur."],
+["Peta digunakan untuk...",["Menampilkan gambaran permukaan bumi","Mengukur suhu tubuh","Menghitung waktu","Merekam suara"],0,"Peta menggambarkan wilayah di permukaan bumi."],
+["Proses pengikisan tanah oleh air atau angin disebut...",["Sedimentasi","Erosi","Evaporasi","Kondensasi"],1,"Erosi adalah proses pengikisan tanah atau batuan."],
+["Ibu kota Indonesia yang ditetapkan sebagai ibu kota negara baru adalah...",["Bandung","Surabaya","Nusantara","Medan"],2,"Ibu kota negara baru Indonesia bernama Nusantara."]
+],
+"Biologi":[
+["Ilmu yang mempelajari makhluk hidup disebut...",["Fisika","Kimia","Biologi","Geologi"],2,"Biologi mempelajari makhluk hidup dan kehidupannya."],
+["Unit struktural dan fungsional terkecil makhluk hidup adalah...",["Organ","Sel","Jaringan","Sistem organ"],1,"Sel merupakan unit dasar kehidupan."],
+["Tempat berlangsungnya fotosintesis pada sel tumbuhan adalah...",["Mitokondria","Kloroplas","Ribosom","Nukleus"],1,"Kloroplas mengandung klorofil untuk fotosintesis."],
+["Hewan yang berkembang biak dengan bertelur disebut...",["Vivipar","Ovipar","Ovovivipar","Vegetatif"],1,"Ovipar adalah cara berkembang biak dengan bertelur."],
+["Bagian tumbuhan yang menyerap air dari tanah adalah...",["Daun","Bunga","Akar","Buah"],2,"Akar menyerap air dan mineral dari tanah."],
+["Organ yang berfungsi untuk bernapas pada ikan adalah...",["Paru-paru","Insang","Kulit saja","Trakea"],1,"Ikan menggunakan insang untuk mengambil oksigen dari air."],
+["Hewan pemakan segala disebut...",["Herbivora","Karnivora","Omnivora","Insektivora"],2,"Omnivora memakan tumbuhan maupun hewan."],
+["DNA merupakan singkatan dari...",["Deoxyribonucleic Acid","Digital Network Area","Dynamic Natural Atom","Double Nitrogen Acid"],0,"DNA adalah Deoxyribonucleic Acid."],
+["Hubungan antara lebah dan bunga yang saling menguntungkan disebut...",["Parasitisme","Mutualisme","Kompetisi","Predasi"],1,"Lebah memperoleh nektar dan bunga terbantu penyerbukannya."],
+["Proses perubahan ulat menjadi kupu-kupu disebut...",["Fotosintesis","Metamorfosis","Fermentasi","Adaptasi"],1,"Metamorfosis adalah perubahan bentuk selama perkembangan hewan."]
+]
+};
+
+let currentQuiz=[];
+let quizIndex=0;
+let selectedAnswer=-1;
+let rightAnswers=0;
+let answerLocked=false;
+let quizSubject="";
+
+function startQuiz(subject){
+if(!quizData[subject]||quizData[subject].length!==10){
+alert("Kuis belum tersedia atau jumlah soal tidak sesuai.");
+return;
+}
+quizSubject=subject;
+currentQuiz=quizData[subject];
+quizIndex=0;
+selectedAnswer=-1;
+rightAnswers=0;
+answerLocked=false;
+document.getElementById("quizSelection").classList.add("hidden");
+document.getElementById("quizBox").classList.remove("hidden");
+renderQuestion();
+}
+function renderQuestion(){
+const box=document.getElementById("quizBox");
+if(!currentQuiz.length){backQuiz();return}
+if(quizIndex>=currentQuiz.length){finishQuiz();return}
+const q=currentQuiz[quizIndex];
+box.innerHTML=`
+<div class="quiz-meta">${quizSubject.toUpperCase()} • SOAL ${quizIndex+1} DARI ${currentQuiz.length}</div>
+<div class="progress-row"><span>Progress kuis</span><strong>${(quizIndex/currentQuiz.length*100).toFixed(0)}%</strong></div>
+<div class="bar"><div style="width:${quizIndex/currentQuiz.length*100}%"></div></div>
+<h2>${q[0]}</h2>
+<div class="answers">${q[1].map((a,i)=>`
+<button class="answer" onclick="chooseAnswer(${i})">${String.fromCharCode(65+i)}. ${a}</button>
+`).join("")}</div>
+<div id="feedback" class="feedback"></div>
+<button id="nextQuestionBtn" class="quiz-action" onclick="checkAnswer()" disabled>Periksa jawaban</button>`;
+}
+function chooseAnswer(i){
+if(answerLocked)return;
+selectedAnswer=i;
+document.querySelectorAll(".answer").forEach((b,j)=>b.classList.toggle("selected",i===j));
+document.getElementById("nextQuestionBtn").disabled=false;
+}
+function checkAnswer(){
+if(selectedAnswer<0||answerLocked)return;
+answerLocked=true;
+const q=currentQuiz[quizIndex];
+const buttons=document.querySelectorAll(".answer");
+buttons[q[2]].classList.add("correct");
+if(selectedAnswer===q[2]){
+rightAnswers++;
+document.getElementById("feedback").innerHTML="✓ Jawaban benar! "+q[3];
+}else{
+buttons[selectedAnswer].classList.add("wrong");
+document.getElementById("feedback").innerHTML="✗ Jawaban belum tepat. Jawaban benar: "+q[1][q[2]]+". "+q[3];
+}
+const btn=document.getElementById("nextQuestionBtn");
+btn.textContent=quizIndex===currentQuiz.length-1?"Lihat hasil akhir":"Soal berikutnya →";
+btn.onclick=()=>{
+quizIndex++;
+selectedAnswer=-1;
+answerLocked=false;
+renderQuestion();
+};
+}
+function finishQuiz(){
+const score=rightAnswers*10;
+data.quizzes++;
+data.score+=score;
+data.history.unshift({
+title:"Kuis "+quizSubject+" — "+score+"/100",
+date:new Date().toLocaleString("id-ID")
+});
+data.history=data.history.slice(0,30);
+persist();
+updateStats();
+document.getElementById("quizBox").innerHTML=`
+<div class="quiz-result">
+<div style="font-size:55px">🏆</div>
+<h2>${score}/100</h2>
+<h3>Kuis berhasil diselesaikan!</h3>
+<p>Jawaban benar: ${rightAnswers} dari ${currentQuiz.length} soal.</p>
+<p>Jawaban salah: ${currentQuiz.length-rightAnswers} soal.</p>
+<p>${score>=80?"Luar biasa! Pertahankan prestasimu.":score>=60?"Bagus! Terus tingkatkan kemampuanmu.":"Tetap semangat! Coba pelajari materi dan ulangi kuis."}</p>
+<button class="quiz-action" onclick="backQuiz()">Kembali ke daftar kuis</button>
+</div>`;
+}
+function backQuiz(){
+document.getElementById("quizBox").classList.add("hidden");
+document.getElementById("quizSelection").classList.remove("hidden");
+currentQuiz=[];
+}
+
+/* PROGRESS */
+function addHistory(title){
+data.history.unshift({title,date:new Date().toLocaleString("id-ID")});
+data.history=data.history.slice(0,30);
+persist();
+updateStats();
+}
+function updateStats(){
+if(!data)return;
+const count=data.lessons.length;
+const percent=Math.round(count/courses.length*100);
+const values={
+statLessons:count,statQuiz:data.quizzes,statScore:data.score,statProgress:percent+"%",
+pLessons:count,pQuiz:data.quizzes,pScore:data.score,pProgress:percent+"%",
+progressText:percent+"%",pText:percent+"%"
+};
+Object.entries(values).forEach(([id,value])=>{
+const el=document.getElementById(id);
+if(el)el.textContent=value;
+});
+["progressBar","pBar"].forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.style.width=percent+"%";
+});
+const history=document.getElementById("history");
+if(history){
+history.innerHTML=data.history.length?
+data.history.map(h=>`<div class="schedule-item"><div class="time">✦</div><div><h3>${escapeHTML(h.title)}</h3><p>${escapeHTML(h.date)}</p></div></div>`).join("")
+:'<p style="font-size:12px;color:var(--muted)">Belum ada aktivitas belajar.</p>';
+}
+}
+function escapeHTML(s){
+return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function toggleDark(){
+document.body.classList.toggle("dark");
+localStorage.setItem("tinoDark",document.body.classList.contains("dark"));
+}
+if(localStorage.getItem("tinoDark")==="true"){
+document.body.classList.add("dark");
+}
+
+/* SESSION — HARUS BERADA DI PALING BAWAH SETELAH DATA DAN FUNGSI SIAP */
+(function restoreSession(){
+const savedSession=localStorage.getItem("TINO_SESSION");
+if(!savedSession)return;
+const account=getAccounts()[savedSession];
+if(!account){
+localStorage.removeItem("TINO_SESSION");
+return;
+}
+currentUser=savedSession;
+data=account.data||{lessons:[],quizzes:0,score:0,history:[]};
+data.lessons=Array.isArray(data.lessons)?data.lessons:[];
+data.history=Array.isArray(data.history)?data.history:[];
+data.quizzes=Number(data.quizzes)||0;
+data.score=Number(data.score)||0;
+openApp();
+})();
+</script>
+</body>
+</html>
